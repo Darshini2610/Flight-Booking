@@ -1,0 +1,103 @@
+import React, { useEffect, useState } from "react";
+import { bookflight, flightLogo } from "./Flights";
+import Navbar from "./Navbar";
+
+function BookTicket () {
+
+    const [male, setmale] = useState([])
+    const [female, setfemale] = useState([])
+    const fromAirport = localStorage.getItem('fromAirName')
+    const toAirport = localStorage.getItem('toAirName')
+    const date = localStorage.getItem('Date')
+    const travellers = localStorage.getItem('Travellers')
+    const Class = localStorage.getItem('Class')
+    let NoOfTrav = [];
+    let i=1;
+    for (i=1; i<=travellers[0]; i++) {
+        NoOfTrav.push(i)
+        male.push('')
+        female.push('')
+    }
+
+    function selectgender(gender, traveller) {
+        if (gender === 'male') {
+            let Male = [...male]
+            Male[traveller] = 'on'
+            setmale(Male)
+            let Female = [...female]
+            Female[traveller] = ''
+            setfemale(Female)
+        }
+        if (gender === 'female') {
+            let Male = [...male]
+            Male[traveller] = ''
+            setmale(Male)
+            let Female = [...female]
+            Female[traveller] = 'on'
+            setfemale(Female)
+        }
+    }
+
+    const getcost = () => {
+        let Class = null
+        if (localStorage.getItem('Class') === 'Economy') {
+            Class = 7;
+        }
+        if (localStorage.getItem('Class') === 'Premium Economy') {
+            Class = 8;
+        }
+        if (localStorage.getItem('Class') === 'Business') {
+            Class = 9;
+        }
+        return travellers[0]*bookflight[Class]
+    }
+
+    // let travellerDetails = []
+    // const [Name, setName] = useState('')
+    // function setTravellerName (name, index) {
+    //     setName(name)
+    //     settravellerDetails(Name)
+    // }
+
+    // function settravellerDetails (data, index, content) {
+    //     if (content=='name') {
+    //         travellerDetails[index].push({
+    //             name: data
+    //         })
+    //     }
+    // }
+    // console.log(travellerDetails)
+
+    return (
+        <div className="h-screen bg-gradient-to-b to-sky-700 from-gray-950">
+            <Navbar />
+            <div className="grid grid-cols-2 top-28 absolute w-screen place-items-center mx-10">
+                <div className="bg-white w-full text-center py-5">
+                    <p className="m-7 mt-5 text-lg font-semibold">TRAVELLER DETAILS</p>
+                    {NoOfTrav.map((traveller) => {
+                        return <div className="m-2 text-left" key={traveller}>
+                            <p className="m-2 mt-5">Traveller {traveller}</p>
+                            <input type='text' placeholder="Full Name" className="border-2 mx-2 rounded-md p-2 w-1/2"
+                                onChange={(event) => settravellerDetails(event.target.value, traveller, 'name')}/>
+                            <input type="number" placeholder="Age" className="border-2 mx-2 rounded-md p-2 w-1/6"/>
+                            <input type='radio' className="border-2 mx-3" checked={male[traveller]} onChange={(event) => selectgender('male', traveller)}/>Male
+                            <input type='radio' className="ml-5 mx-2" checked={female[traveller]} onChange={(event) => selectgender('female', traveller)}/>Female
+                        </div>
+                    })}
+                </div>
+                <div className="bg-white p-5 py-5 w-2/3">
+                    <p className="m-7 mt-5 text-lg font-semibold text-center ">FARE SUMMARY</p>
+                    <div className="w-fit grid grid-cols-2 font-bold place-items-center"><p className="w-2/3 inline-block">{flightLogo}</p>{bookflight[6]}</div>
+                    <div className="border-2 rounded-md p-2 w-full m-2">FROM: <p className="font-bold inline-block">{fromAirport}</p></div>
+                    <div className="border-2 rounded-md p-2 w-full m-2">TO: <p className="font-bold inline-block">{toAirport}</p></div>
+                    <div className="border-2 rounded-md p-2 w-full m-2">DATE: <p className="font-bold inline-block">{date}</p></div>
+                    <div className="border-2 rounded-md p-2 w-full m-2">CLASS: <p className="font-bold inline-block">{Class}</p></div>
+                    <div className="border-2 rounded-md p-2 w-full m-2">TRAVELLERS: <p className="font-bold inline-block">{travellers}</p></div>
+                    <div className="border-2 rounded-md p-2 w-full m-2">TOTAL AMOUNT: <p className="font-bold inline-block">Rs. {getcost()}</p></div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export default BookTicket;
